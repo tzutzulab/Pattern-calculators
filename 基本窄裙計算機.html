@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基本窄裙原型 - 專業計算機</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --bg-color: #fcfaff;
+            --primary-accent: #8b5cf6;
+            --primary-dark: #4c1d95;
+            --input-focus: #ede9fe;
+            --section-bg: #f5f3ff;
+            --text-main: #374151;
+            --text-muted: #9ca3af;
+            --card-border: #f3e8ff;
+            
+            --line-red: #ef4444;
+            --line-blue: #3b82f6;
+            --line-green: #10b981;
+            --line-yellow: #f59e0b;
+            --line-pink: #ec4899;
+            --line-purple: #a855f7;
+        }
+
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .data-card { 
+            background: white; 
+            padding: 0.8rem; 
+            border-radius: 0.75rem; 
+            border: 1px solid var(--card-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .data-card:hover { 
+            border-color: var(--primary-accent); 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.1); 
+        }
+        
+        .label-text { font-size: 0.75rem; color: #6b7280; font-weight: 500; margin-bottom: 2px; }
+        .value-text { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); font-family: 'Consolas', monospace; }
+        
+        .section-title { 
+            grid-column: span 2; 
+            font-weight: 800; 
+            font-size: 0.85rem; 
+            color: var(--primary-dark); 
+            background: var(--section-bg); 
+            padding: 8px 14px; 
+            border-radius: 8px; 
+            margin-top: 14px; 
+            display: flex; 
+            justify-content: space-between; 
+            border-left: 4px solid var(--primary-accent);
+        }
+
+        .input-focus-style:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 4px rgba(237, 233, 254, 0.4);
+            background-color: white;
+        }
+
+        input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        
+        .tab-btn {
+            padding: 10px 24px;
+            font-weight: 700;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: #9ca3af;
+            user-select: none;
+        }
+        .tab-btn.active {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary-accent);
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .badge-red { color: var(--line-red); font-weight: bold; }
+        .badge-blue { color: var(--line-blue); font-weight: bold; }
+        .badge-green { color: var(--line-green); font-weight: bold; }
+        .badge-yellow { color: var(--line-yellow); font-weight: bold; }
+        .badge-pink { color: var(--line-pink); font-weight: bold; }
+        .badge-purple { color: var(--line-purple); font-weight: bold; }
+
+        .unified-note-text {
+            font-size: 0.85rem; 
+            color: #374151; 
+            line-height: 1.6;
+        }
+
+        .image-frame {
+            position: relative;
+            background-color: #f9fafb;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid #f3f4f6;
+            transition: aspect-ratio 0.3s ease;
+        }
+
+        .nav-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl font-black text-gray-800 tracking-tight">基本窄裙原型計算機</h1>
+        </header>
+
+        <!-- 數值輸入區 -->
+        <div class="bg-white rounded-3xl shadow-sm p-6 mb-4 border border-purple-50">
+            <div class="grid grid-cols-4 gap-2">
+                <div>
+                    <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-tighter mb-1 text-center">腰圍 (W)</label>
+                    <input type="number" id="inputW" value="72" oninput="updateAll()" class="w-full p-2 bg-purple-50/30 border-2 border-transparent rounded-xl input-focus-style outline-none text-lg font-black text-center text-gray-800 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-tighter mb-1 text-center">臀圍 (H)</label>
+                    <input type="number" id="inputH" value="92" oninput="updateAll()" class="w-full p-2 bg-purple-50/30 border-2 border-transparent rounded-xl input-focus-style outline-none text-lg font-black text-center text-gray-800 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-tighter mb-1 text-center">腰長</label>
+                    <input type="number" id="inputWL" value="18" oninput="updateAll()" class="w-full p-2 bg-purple-50/30 border-2 border-transparent rounded-xl input-focus-style outline-none text-lg font-black text-center text-gray-800 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-tighter mb-1 text-center">裙長</label>
+                    <input type="number" id="inputPL" value="60" oninput="updateAll()" class="w-full p-2 bg-purple-50/30 border-2 border-transparent rounded-xl input-focus-style outline-none text-lg font-black text-center text-gray-800 transition-all">
+                </div>
+            </div>
+        </div>
+
+        <!-- 分頁切換 -->
+        <div class="flex justify-center space-x-2 border-b border-purple-100 mb-6">
+            <div id="tab1-btn" class="tab-btn active text-sm" onclick="switchTab(1)">數據計算</div>
+            <div id="tab2-btn" class="tab-btn text-sm" onclick="switchTab(2)">打版步驟教學</div>
+        </div>
+
+        <!-- 數據計算分頁 -->
+        <div id="tab1-content" class="tab-content active">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="section-title"><span>基礎寬度與分配</span></div>
+                <div class="data-card"><p class="label-text">H/2+2</p><p class="value-text" id="v1">0.0</p></div>
+                <div class="data-card"><p class="label-text">前腰圍寬 (W+1)/4+1</p><p class="value-text" id="v2">0.0</p></div>
+                
+                <div class="section-title"><span>褶子細節</span></div>
+                <div class="data-card"><p class="label-text">●</p><p class="value-text" id="v3">0.0</p></div>
+                <div class="data-card"><p class="label-text">● - 0.5</p><p class="value-text" id="v4">0.0</p></div>
+                <div class="data-card"><p class="label-text">● + 0.5</p><p class="value-text" id="v5">0.0</p></div>
+                
+                <div class="section-title"><span>後片細節</span></div>
+                <div class="data-card"><p class="label-text">後腰圍寬 (W+1)/4-1</p><p class="value-text" id="v6">0.0</p></div>
+                <div class="data-card"><p class="label-text">▲</p><p class="value-text" id="v7">0.0</p></div>
+            </div>
+        </div>
+
+        <!-- 打版步驟教學分頁 -->
+        <div id="tab2-content" class="tab-content">
+            <!-- 修改此處的示範參數提示框 -->
+            <div class="mb-4 bg-gray-50 border-y border-gray-100 py-2 flex justify-center">
+                <div class="flex items-center space-x-4 text-[11px] font-medium text-gray-500">
+                    <span class="text-gray-400 font-bold">SAMPLE:</span>
+                    <div class="flex items-center"><span class="mr-1">腰圍 (W)</span><span class="font-bold font-mono text-gray-700">64 cm</span></div>
+                    <span class="text-gray-300">/</span>
+                    <div class="flex items-center"><span class="mr-1">臀圍 (H)</span><span class="font-bold font-mono text-gray-700">92 cm</span></div>
+                    <span class="text-gray-300">/</span>
+                    <div class="flex items-center"><span class="mr-1">腰長</span><span class="font-bold font-mono text-gray-700">19 cm</span></div>
+                    <span class="text-gray-300">/</span>
+                    <div class="flex items-center"><span class="mr-1">裙長</span><span class="font-bold font-mono text-gray-700">35 cm</span></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-purple-50 mb-8">
+                <div class="image-frame" id="mainFrame">
+                    <img id="stepImage" src="" alt="打版步驟圖" class="max-w-full max-h-full object-contain hidden" onerror="handleImageError('main')">
+                    <div id="imagePlaceholder" class="text-gray-400 text-center p-12">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="1.5"></path></svg>
+                        <p id="placeholderText" class="text-sm font-medium">圖片載入中...</p>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <div class="flex justify-between items-center bg-gray-50/50 p-3 rounded-2xl border border-gray-100">
+                        <button onclick="prevStep()" class="nav-btn p-2.5 px-5 bg-white text-gray-500 rounded-xl font-bold border border-gray-200 hover:bg-gray-100 transition-all text-xs shadow-sm">上一步</button>
+                        <div class="text-center"><span id="stepCounter" class="text-base font-black text-purple-600">0 / 0</span></div>
+                        <button onclick="nextStep()" class="nav-btn p-2.5 px-5 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 shadow-lg shadow-purple-100 transition-all text-xs">下一步</button>
+                    </div>
+                    
+                    <div id="stepDescription" class="space-y-3 text-gray-700 text-sm leading-relaxed font-medium">
+                        <!-- 內容自動填入 -->
+                    </div>
+
+                    <div id="subImagesContainer" class="space-y-4"></div>
+
+                    <div id="textNoteArea" class="p-4 bg-purple-50/50 rounded-2xl border-l-4 border-purple-300 hidden">
+                        <div class="flex items-start">
+                            <span class="mr-2 text-purple-500">💡</span>
+                            <div id="primaryNoteText" class="unified-note-text text-[13px] font-medium"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 1;
+        let currentStep = 0;
+        let calculations = {};
+
+        const stepsData = [
+            {
+                fileName: "image/基本窄裙版型(1).png",
+                description: [
+                    { html: "1.<span class='badge-red'>紅</span>：先畫出寬={{v1}} 、高=裙長的矩形。上邊為腰線(WL)，左邊為後中心(CB)，右邊為前中心(CF)，下邊為裙襬。" },
+                    { html: "2.<span class='badge-blue'>藍</span>：自 WL 往下取腰長，畫水平線段至 CF，此為臀圍線(HL)" },
+                    { html: "3.<span class='badge-green'>綠</span>：找出藍線中點，往左取 0.5 前後差，畫垂直線，此為脇邊線(SS)。" }
+                ],
+                note: "這裡的 0.5 前後差指的是前臀圍和後臀圍的差值。"
+            },
+            {
+                fileName: "image/基本窄裙版型(2).png",
+                subImages: ["image/基本窄裙版型(2-1).png", "image/基本窄裙版型(2-2).png"],
+                description: [
+                    { html: "1.<span class='badge-red'>紅</span>：在前片 WL 上，自 CF 取前腰圍寬={{v2}} 得到 A 點，將 A 點到 SS 的線段分成三等份，量取一等份長度為 {{v3}}" },
+                    { html: "2.<span class='badge-blue'>藍</span>：自 SS 和 HL 交點往上取 4 為 C 點，自 C 點畫弧線至一等份位置 B 點，並往上延伸 1~1.2 (弧線較直時延伸 1，弧線較彎時延伸 1.2)，此為前脇邊線" },
+                    { html: "3.<span class='badge-yellow'>黃</span>：在 WL 上，自 CF 與脇邊頂端連成前腰圍線，需與前中心及脇邊線成垂直" }
+                ],
+                note: "❶ 前腰圍寬=(W+1)/4+1 的(W+1)指的是腰圍加上1cm的鬆份，如果不想那麼合身可以改成(W+2)。\n❷ 前腰圍寬=(W+1)/4+1最後的+1為腰圍前後差"
+            },
+            {
+                fileName: "image/基本窄裙版型(3).png",
+                description: [
+                    { html: "1.<span class='badge-red'>紅</span>：將前片 HL 分成三等份，定出 D、E 點" },
+                    { html: "2.<span class='badge-blue'>藍</span>：CF 腰長取中點，畫水平線至脇邊線 SS，為前腰褶子長度" },
+                    { html: "3.<span class='badge-green'>綠</span>：自 D 點垂直往上交於前腰圍線，往左取內側腰褶寬{{v4}}。中心點往下交於藍線為褶尖點，連接內側褶子" },
+                    { html: "4.<span class='badge-yellow'>黃</span>：自 E 點垂直往上交於前腰圍線，往右取外側腰褶寬{{v5}}。中心點往下交於藍線為褶尖點，連接外側褶子" },
+                    { html: "5.<span class='badge-pink'>粉</span>：連接前中心折雙線、下襬及脇邊線，前片版型完成" }
+                ],
+                note: "前片腰褶的長度可根據身形調整±1公分：\n · 小腹較凸出→縮短腰褶\n · 小腹較平坦→加長腰褶"
+            },
+            {
+                fileName: "image/基本窄裙版型(4).png",
+                description: [
+                    { html: "1.<span class='badge-red'>紅</span>：後腰圍線自 SS 向左取{{v3}}為 F 點，自 C 點畫弧線至 F 點，並往上延伸和前脇邊相同份量(1~1.2)，此為後脇邊，需和前脇邊等長等弧度" },
+                    { html: "2.<span class='badge-blue'>藍</span>：在後片 WL 上，自CB取後腰圍寬={{v6}} 得到 G 點，將 G-F 線段分成二等份，量取一等份長度為 {{v7}}" },
+                    { html: "3.<span class='badge-yellow'>黃</span>：CB 自 WL 向下取0.5，和脇邊頂端連成後腰圍線，需與後中心及脇邊線成垂直" }
+                ]
+            },
+            {
+                fileName: "image/基本窄裙版型(5).png",
+                description: [
+                    { html: "1.<span class='badge-red'>紅</span>：將後片 HL 分成三等份，定出 H、I 點" },
+                    { html: "2.<span class='badge-blue'>藍</span>：自 H 點向上交於後腰圍，向右取內側腰褶寬{{v7}}" },
+                    { html: "3.<span class='badge-green'>綠</span>：腰褶寬取中點向下交於 HL 於 J 點" },
+                    { html: "4.<span class='badge-yellow'>黃</span>：自 J 點向上取 5~7，再向右取 0.5~0.7 為褶尖點，連接內側褶子" }
+                ]
+            },
+            {
+                fileName: "image/基本窄裙版型(6).png",
+                description: [
+                    { html: "1.<span class='badge-red'>紅</span>：自 I 點向上交於後腰圍，以交點為中心，取外側腰褶寬{{v7}}" },
+                    { html: "2.<span class='badge-blue'>藍</span>：連接前片外側腰褶尖與後片內側腰褶尖，交紅線於 K 點" },
+                    { html: "3.<span class='badge-green'>綠</span>：自K點向右取 0.5~0.7 為褶尖點，連接外側褶子" },
+                    { html: "4.<span class='badge-yellow'>黃</span>：連接後中心及下襬" },
+                    { html: "5.<span class='badge-pink'>粉</span>：CB自HL向下1，此為後拉鍊止點。後片版型完成" }
+                ],
+                note: "❶ 後片腰褶的長度可根據身形調整±1公分：\n　 · 翹臀→縮短腰褶\n 　 · 扁臀→加長腰褶\n❷ 褶尖向右 0.5~0.7 影響腰褶的斜度，褶子越斜視覺效果越集中。"
+            }
+        ];
+
+        function switchTab(tabNum) {
+            currentTab = tabNum;
+            document.getElementById('tab1-btn').classList.toggle('active', tabNum === 1);
+            document.getElementById('tab2-btn').classList.toggle('active', tabNum === 2);
+            document.getElementById('tab1-content').classList.toggle('active', tabNum === 1);
+            document.getElementById('tab2-content').classList.toggle('active', tabNum === 2);
+            if (tabNum === 2) renderStep();
+        }
+
+        function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
+        function nextStep() { if (currentStep < stepsData.length - 1) { currentStep++; renderStep(); } }
+
+        function handleImageError(type, el) {
+            if (type === 'main') {
+                const img = document.getElementById('stepImage');
+                const placeholder = document.getElementById('imagePlaceholder');
+                img.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            } else if (type === 'sub' && el) {
+                el.classList.add('hidden');
+                const p = el.nextElementSibling;
+                if(p) p.classList.remove('hidden');
+            }
+        }
+
+        function renderStep() {
+            if (stepsData.length === 0) return;
+            const step = stepsData[currentStep];
+            
+            document.getElementById('stepCounter').innerText = `${currentStep + 1} / ${stepsData.length}`;
+            
+            const img = document.getElementById('stepImage');
+            const placeholder = document.getElementById('imagePlaceholder');
+            
+            if (step.fileName) {
+                img.src = step.fileName;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                img.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+
+            const descContainer = document.getElementById('stepDescription');
+            descContainer.innerHTML = "";
+            step.description.forEach(part => {
+                const p = document.createElement('p');
+                let content = part.html || part.text;
+                p.innerHTML = content.replace(/\{\{(v\d+)\}\}/g, (match, vName) => calculations[vName] || "0.0");
+                descContainer.appendChild(p);
+            });
+
+            const subContainer = document.getElementById('subImagesContainer');
+            subContainer.innerHTML = "";
+            if (step.subImages && step.subImages.length > 0) {
+                step.subImages.forEach(src => {
+                    const frame = document.createElement('div');
+                    frame.className = "image-frame rounded-2xl border border-gray-100";
+                    frame.innerHTML = `
+                        <img src="${src}" alt="補充說明圖" class="max-w-full max-h-full object-contain hidden" onload="this.classList.remove('hidden'); this.nextElementSibling.classList.add('hidden')" onerror="handleImageError('sub', this)">
+                        <div class="text-gray-300 text-center p-12">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="1.5"></path></svg>
+                            <p class="text-xs font-bold tracking-widest uppercase opacity-40">補充說明圖</p>
+                        </div>
+                    `;
+                    subContainer.appendChild(frame);
+                });
+            }
+
+            const textNoteArea = document.getElementById('textNoteArea');
+            const primaryNote = document.getElementById('primaryNoteText');
+            if (step.note && step.note.trim() !== "") {
+                textNoteArea.classList.remove('hidden');
+                primaryNote.innerHTML = step.note.replace(/\n/g, '<br>');
+            } else {
+                textNoteArea.classList.add('hidden');
+            }
+        }
+
+        function updateAll() {
+            const W = parseFloat(document.getElementById('inputW').value) || 0;
+            const H = parseFloat(document.getElementById('inputH').value) || 0;
+
+            const v1 = H / 2 + 2;                                      
+            const v2 = (W + 1) / 4 + 1;                                
+            const v3 = (v1 / 2 + 0.5 - v2) / 3;                        
+            const v4 = v3 - 0.5;                                       
+            const v5 = v3 + 0.5;                                       
+            const v6 = (W + 1) / 4 - 1;                                
+            const v7 = ((H / 4 + 1) - 0.5 - v6 - v3) / 2;             
+
+            const setVal = (id, val) => {
+                const rounded = isNaN(val) ? "0.0" : val.toFixed(1);
+                const el = document.getElementById(id);
+                if(el) el.innerText = rounded;
+                calculations[id] = rounded;
+            };
+
+            setVal('v1', v1); setVal('v2', v2); setVal('v3', v3);
+            setVal('v4', v4); setVal('v5', v5); setVal('v6', v6); setVal('v7', v7);
+
+            if (currentTab === 2) renderStep();
+        }
+
+        window.onload = updateAll;
+    </script>
+</body>
+</html>

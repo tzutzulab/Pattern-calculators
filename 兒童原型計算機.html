@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兒童新文化式原型 - 專業計算機</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --bg-color: #fffdf5;
+            --primary-accent: #facc15;
+            --primary-dark: #854d0e;
+            --input-focus: #fef08a;
+            --section-bg: #fef9c3;
+            --text-main: #374151;
+            --text-muted: #9ca3af;
+            --card-border: #fde68a;
+            
+            --line-red: #ef4444;
+            --line-blue: #3b82f6;
+            --line-green: #10b981;
+            --line-yellow: #f59e0b;
+            --line-pink: #ec4899;
+            --line-purple: #a855f7;
+        }
+
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .data-card { 
+            background: white; 
+            padding: 0.8rem; 
+            border-radius: 0.75rem; 
+            border: 1px solid var(--card-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .data-card:hover { 
+            border-color: var(--primary-accent); 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.1); 
+        }
+        
+        .label-text { font-size: 0.75rem; color: #6b7280; font-weight: 500; margin-bottom: 2px; }
+        .value-text { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); font-family: 'Consolas', monospace; }
+        
+        .section-title { 
+            grid-column: span 2; 
+            font-weight: 800; 
+            font-size: 0.85rem; 
+            color: var(--primary-dark); 
+            background: var(--section-bg); 
+            padding: 8px 14px; 
+            border-radius: 8px; 
+            margin-top: 14px; 
+            display: flex; 
+            justify-content: space-between; 
+            border-left: 4px solid var(--primary-accent);
+        }
+
+        .input-focus-style:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 4px rgba(254, 240, 138, 0.4);
+            background-color: white;
+        }
+
+        input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        
+        .tab-btn {
+            padding: 10px 24px;
+            font-weight: 700;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: #9ca3af;
+            user-select: none;
+        }
+        .tab-btn.active {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary-accent);
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .badge-red { color: var(--line-red); font-weight: bold; }
+        .badge-blue { color: var(--line-blue); font-weight: bold; }
+        .badge-green { color: var(--line-green); font-weight: bold; }
+        .badge-yellow { color: var(--line-yellow); font-weight: bold; }
+        .badge-pink { color: var(--line-pink); font-weight: bold; }
+        .badge-purple { color: var(--line-purple); font-weight: bold; }
+
+        .unified-note-text {
+            font-size: 0.85rem; 
+            color: #4b5563; 
+            line-height: 1.6;
+        }
+
+        .image-frame {
+            position: relative;
+            background-color: #f9fafb;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .note-image-frame {
+            border-radius: 1rem;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f3f4f6;
+        }
+
+        .nav-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl font-black text-gray-800 tracking-tight">兒童新文化式原型計算機</h1>
+        </header>
+
+        <!-- 數值輸入區 -->
+        <div class="bg-white rounded-3xl shadow-sm p-6 mb-4 border border-yellow-50">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 text-center">胸圍 B (cm)</label>
+                    <input type="number" id="inputB" value="68" oninput="updateAll()" class="w-full p-3 bg-yellow-50/30 border-2 border-transparent rounded-2xl input-focus-style outline-none text-xl font-black text-center text-gray-800 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 text-center">背長 L (cm)</label>
+                    <input type="number" id="inputL" value="28" oninput="updateAll()" class="w-full p-3 bg-yellow-50/30 border-2 border-transparent rounded-2xl input-focus-style outline-none text-xl font-black text-center text-gray-800 transition-all">
+                </div>
+            </div>
+        </div>
+
+        <!-- 分頁切換 -->
+        <div class="flex justify-center space-x-2 border-b border-yellow-100 mb-6">
+            <div id="tab1-btn" class="tab-btn active text-sm" onclick="switchTab(1)">數據計算</div>
+            <div id="tab2-btn" class="tab-btn text-sm" onclick="switchTab(2)">打版步驟教學</div>
+        </div>
+
+        <!-- 數據計算分頁 -->
+        <div id="tab1-content" class="tab-content active">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="section-title"><span>基礎框架與寬度</span></div>
+                <div class="data-card"><p class="label-text">B/2+7 (衣寬)</p><p class="value-text" id="v1">0.0</p></div>
+                <div class="data-card"><p class="label-text">B/4+0.5</p><p class="value-text" id="v2">0.0</p></div>
+                <div class="data-card"><p class="label-text">衣寬/3+1.5 (背寬)</p><p class="value-text" id="v3">0.0</p></div>
+                <div class="data-card"><p class="label-text">衣寬/3+0.7 (胸寬)</p><p class="value-text" id="v4">0.0</p></div>
+
+                <div class="section-title"><span>領口細節</span></div>
+                <div class="data-card"><p class="label-text">B/20+2.5 = ⦿ (後/前領寬)</p><p class="value-text" id="v5">0.0</p></div>
+                <div class="data-card"><p class="label-text">● (1/3 ⦿)</p><p class="value-text" id="v6">0.0</p></div>
+                <div class="data-card"><p class="label-text">●-0.5</p><p class="value-text" id="v7">0.0</p></div>
+                <div class="data-card"><p class="label-text">⦿+0.5 (前領深)</p><p class="value-text" id="v8">0.0</p></div>
+                <div class="data-card"><p class="label-text">●+0.5</p><p class="value-text" id="v9">0.0</p></div>
+                <div class="data-card"><p class="label-text">●+1</p><p class="value-text" id="v10">0.0</p></div>
+
+                <div class="section-title"><span>肩線細節</span></div>
+                <div class="data-card"><p class="label-text">★ (後肩線長)</p><p class="value-text" id="v11">0.0</p></div>
+                <div class="data-card"><p class="label-text">★-1 (前肩線長)</p><p class="value-text" id="v12">0.0</p></div>
+
+                <div class="section-title"><span>袖窿 AH 補助量</span></div>
+                <div class="data-card"><p class="label-text">▲ (1/2後腋下寬)</p><p class="value-text" id="v13">0.0</p></div>
+                <div class="data-card"><p class="label-text">▲-0.5</p><p class="value-text" id="v14">0.0</p></div>
+            </div>
+        </div>
+
+        <!-- 打版步驟教學分頁 -->
+        <div id="tab2-content" class="tab-content">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-yellow-50 mb-8 mt-2">
+                <div class="image-frame" id="mainFrame">
+                    <img id="stepImage" src="" alt="打版步驟圖" class="max-w-full max-h-full object-contain hidden" onerror="handleImageError('main')">
+                    <div id="imagePlaceholder" class="text-gray-400 text-center p-12">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="1.5"></path></svg>
+                        <p id="placeholderText" class="text-sm font-medium">圖片載入中...</p>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- 步驟導覽按鈕 -->
+                    <div class="flex justify-between items-center bg-gray-50/50 p-3 rounded-2xl border border-gray-100">
+                        <button onclick="prevStep()" class="nav-btn p-2.5 px-5 bg-white text-gray-500 rounded-xl font-bold border border-gray-200 hover:bg-gray-100 transition-all text-xs shadow-sm">上一步</button>
+                        <div class="text-center">
+                            <span id="stepCounter" class="text-base font-black text-yellow-600">1 / 4</span>
+                        </div>
+                        <button onclick="nextStep()" class="nav-btn p-2.5 px-5 bg-yellow-600 text-white rounded-xl font-bold hover:bg-yellow-700 shadow-lg shadow-yellow-100 transition-all text-xs">下一步</button>
+                    </div>
+
+                    <!-- 步驟說明文字 -->
+                    <div id="stepDescription" class="space-y-3 text-gray-700 text-sm leading-relaxed font-medium"></div>
+
+                    <!-- 補充備註區 -->
+                    <div id="textNoteArea" class="p-4 bg-yellow-50/40 rounded-2xl border-l-4 border-yellow-300 hidden">
+                        <div class="flex items-start">
+                            <span class="mr-2 text-yellow-400">💡</span>
+                            <div id="primaryNoteText" class="unified-note-text text-[13px]"></div>
+                        </div>
+                    </div>
+
+                    <!-- 補充圖片區 -->
+                    <div id="noteImageContainer" class="hidden">
+                        <div class="image-frame note-image-frame" id="noteFrame">
+                            <img id="noteImage" src="" class="max-w-full max-h-full object-contain hidden" alt="補充圖片" onerror="handleImageError('note')">
+                            <div id="noteImagePlaceholder" class="text-gray-400 text-center p-10">
+                                <svg class="w-12 h-12 mx-auto mb-3 opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="1.5"></path></svg>
+                                <p id="notePlaceholderText" class="text-xs font-medium">補充圖片載入中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 1;
+        let currentStep = 0;
+        let calculations = {};
+
+        const stepsData = [
+            {
+                fileName: "image/兒童上衣原型(1).png",
+                description: [
+                    { text: "1.紅：先畫出 高=背長，寬={{v1}} 的矩形，矩形的左邊垂直線為後中心(CB)，右邊垂直線為前中心(CF)，底部水平線為腰圍線(WL)" },
+                    { text: "\n2.藍：自 A 點向下取 {{v2}}，畫水平線為胸圍線(BL)，將藍線分為三等分" },
+                    { text: "\n3.綠：左等分點向右取 1.5，向上畫垂直線為背寬線" },
+                    { text: "\n4.黃：右等分點向左取 0.7，向上畫垂直線為胸寬線" },
+                    { text: "\n5.紫：底線中點向上畫垂直線至 BL，為脇邊線(SS)" }
+                ],
+                note: "兒童版的公式與成人版不同，更強調活動量與生長空間。"
+            },
+            {
+                fileName: "image/兒童上衣原型(2).png",
+                description: [
+                    { text: "1.紅：自 A 點取後領寬 {{v5}}，分三等分量出一等分長度為 {{v6}}，向上取 {{v6}}" },
+                    { text: "\n2.藍：連成後領圍弧線" },
+                    { text: "\n3.綠：背寬線向下取 {{v6}}，再向右取 {{v7}}，連接後領圍，為後肩線，量出長度為 {{v11}}" },
+                    { text: "\n4.黃：前領寬={{v5}}，前領深={{v8}}，畫出對角線" },
+                    { text: "\n5.粉：自 B 點沿對角線取 {{v9}}，連成前領圍弧線" },
+                    { text: "\n6.紫：胸寬線向下取 {{v10}}，連接前領圍，取 {{v12}} 為前肩線" }
+                ],
+                note: "後肩線比前肩線多 1cm 其實就是肩褶的意思，後肩線可以用縮縫的方式和前肩線相接，就不用另外車肩褶。"
+            },
+            {
+                fileName: "image/兒童上衣原型(3).png",
+                description: [
+                    { text: "1.紅：自後肩點，與肩線成垂直畫一弧線至 C-D 中點" },
+                    { text: "\n2.藍：D 至 SS 分二等分，取一等分長度為 {{v13}}，自 D 點畫一 45⁰ 線段取 {{v13}}，連成弧線" },
+                    { text: "\n3.綠：自前肩點，與肩線成垂直畫一弧線至 E-F 中點" },
+                    { text: "\n4.黃：自 F 點畫一 45⁰ 線段取 {{v14}}，連成弧線" }
+                ],
+                note: ""
+            },
+            {
+                fileName: "image/兒童上衣原型(4).png",
+                description: [
+                    { text: "1.紅：胸寬取中點往下畫垂直線" },
+                    { text: "\n2.藍：在 WL 上自 CF 向下取 {{v9}}，再往左畫水平線至紅線" },
+                    { text: "\n3.綠：連接藍線和 SS 完成前片下襬" }
+                ],
+                note: "請注意原型版胸圍一圈的鬆份為 14cm，使用原型版打版時再斟酌是否需增加或減少鬆份。"
+            }
+        ];
+
+        function switchTab(tabNum) {
+            currentTab = tabNum;
+            document.getElementById('tab1-btn').classList.toggle('active', tabNum === 1);
+            document.getElementById('tab2-btn').classList.toggle('active', tabNum === 2);
+            document.getElementById('tab1-content').classList.toggle('active', tabNum === 1);
+            document.getElementById('tab2-content').classList.toggle('active', tabNum === 2);
+            if (tabNum === 2) renderStep();
+        }
+
+        function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
+        function nextStep() { if (currentStep < stepsData.length - 1) { currentStep++; renderStep(); } }
+
+        function handleImageError(type) {
+            if (type === 'main') {
+                const img = document.getElementById('stepImage');
+                const placeholder = document.getElementById('imagePlaceholder');
+                if (img) img.classList.add('hidden');
+                if (placeholder) {
+                    placeholder.classList.remove('hidden');
+                    document.getElementById('placeholderText').innerText = `找不到：${stepsData[currentStep].fileName}`;
+                }
+            } else if (type === 'note') {
+                const img = document.getElementById('noteImage');
+                const placeholder = document.getElementById('noteImagePlaceholder');
+                if (img) img.classList.add('hidden');
+                if (placeholder) {
+                    placeholder.classList.remove('hidden');
+                    document.getElementById('notePlaceholderText').innerText = `找不到補充圖：${stepsData[currentStep].noteImage || '無'}`;
+                }
+            }
+        }
+
+        function renderStep() {
+            const step = stepsData[currentStep];
+            if (!step) return;
+
+            const mainImg = document.getElementById('stepImage');
+            const mainPlaceholder = document.getElementById('imagePlaceholder');
+            if (mainImg) {
+                mainImg.src = step.fileName;
+                mainImg.classList.remove('hidden');
+            }
+            if (mainPlaceholder) mainPlaceholder.classList.add('hidden');
+            
+            const counter = document.getElementById('stepCounter');
+            if (counter) counter.innerText = `${currentStep + 1} / ${stepsData.length}`;
+
+            const descContainer = document.getElementById('stepDescription');
+            if (descContainer) {
+                descContainer.innerHTML = "";
+                step.description.forEach(part => {
+                    const lines = part.text.split("\n");
+                    lines.forEach((line, index) => {
+                        if (line.trim() === "" && index !== 0) return;
+                        const p = document.createElement('p');
+                        let processedText = line.replace(/\{\{(v\d+)\}\}/g, (match, vName) => calculations[vName] || "0.0");
+                        const colorMap = { "紅：": "badge-red", "藍：": "badge-blue", "綠：": "badge-green", "黃：": "badge-yellow", "粉：": "badge-pink", "紫：": "badge-purple" };
+                        let foundKey = null;
+                        for (let key in colorMap) { if (processedText.includes(key)) { foundKey = key; break; } }
+                        if (foundKey) {
+                            const parts = processedText.split(foundKey);
+                            p.innerHTML = `${parts[0]}<span class="${colorMap[foundKey]}">${foundKey}</span>${parts[1]}`;
+                        } else {
+                            p.innerText = processedText;
+                        }
+                        descContainer.appendChild(p);
+                    });
+                });
+            }
+            
+            const textNoteArea = document.getElementById('textNoteArea');
+            const primaryNote = document.getElementById('primaryNoteText');
+            const noteImgContainer = document.getElementById('noteImageContainer');
+
+            if (step.note && step.note.trim() !== "") {
+                if (textNoteArea) textNoteArea.classList.remove('hidden');
+                if (primaryNote) primaryNote.innerHTML = step.note.replace(/\n/g, '<br>');
+            } else {
+                if (textNoteArea) textNoteArea.classList.add('hidden');
+            }
+
+            if (step.noteImage) {
+                if (noteImgContainer) noteImgContainer.classList.remove('hidden');
+                const noteImg = document.getElementById('noteImage');
+                if (noteImg) noteImg.src = step.noteImage;
+            } else {
+                if (noteImgContainer) noteImgContainer.classList.add('hidden');
+            }
+        }
+
+        function updateAll() {
+            const B = parseFloat(document.getElementById('inputB').value) || 0;
+            const L = parseFloat(document.getElementById('inputL').value) || 0;
+
+            const W_total = B / 2 + 7;
+            const h_val = B / 4 + 0.5;
+            const bw = W_total / 3 + 1.5;
+            const cw = W_total / 3 + 0.7;
+            const base_neck = B / 20 + 2.5;
+            const one_third_neck = base_neck / 3;
+            const neck_sub = one_third_neck - 0.5;
+            
+            // 肩線計算
+            const shoulder_part1 = Math.pow((W_total / 3 - base_neck + 1.5 + one_third_neck - 0.5), 2);
+            const shoulder_part2 = Math.pow((one_third_neck * 2), 2);
+            const back_shoulder = Math.sqrt(shoulder_part1 + shoulder_part2);
+            
+            const front_neck_depth = base_neck + 0.5;
+            const neck_add_05 = one_third_neck + 0.5;
+            const neck_add_1 = one_third_neck + 1;
+            const front_shoulder = back_shoulder - 1;
+            const half_armhole = ((W_total / 2) - (W_total / 3) - 1.5) / 2;
+            const armhole_sub = half_armhole - 0.5;
+
+            const setVal = (id, val) => {
+                const numVal = typeof val === 'number' ? val : parseFloat(val);
+                const rounded = isNaN(numVal) ? "0.0" : numVal.toFixed(1);
+                const el = document.getElementById(id);
+                if(el) el.innerText = rounded;
+                calculations[id] = rounded;
+            };
+
+            setVal('v1', W_total);
+            setVal('v2', h_val);
+            setVal('v3', bw);
+            setVal('v4', cw);
+            setVal('v5', base_neck);
+            setVal('v6', one_third_neck);
+            setVal('v7', neck_sub);
+            setVal('v8', front_neck_depth);
+            setVal('v9', neck_add_05);
+            setVal('v10', neck_add_1);
+            setVal('v11', back_shoulder);
+            setVal('v12', front_shoulder);
+            setVal('v13', half_armhole);
+            setVal('v14', armhole_sub);
+
+            if (currentTab === 2) renderStep();
+        }
+
+        window.onload = updateAll;
+    </script>
+</body>
+</html>
