@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>新文化式原型計算器</title>
+    <title>新文化式原型計算機</title>
 
     <link rel="manifest" href="manifest.json">
 
@@ -72,51 +72,50 @@
     <!-- 主內容區 -->
     <main class="flex-1 max-w-md mx-auto w-full px-6 py-6 flex flex-col overflow-hidden">
         
-        <!-- 標題 -->
+        <!-- 標題：放大 50% -->
         <header class="text-center py-6">
-            <h1 class="text-xl font-black text-slate-800 tracking-[0.2em]">新文化式原型計算器</h1>
+            <h1 class="text-3xl font-black text-slate-800 tracking-[0.1em]">新文化式原型計算器</h1>
         </header>
 
-        <!-- 選單列表 -->
+        <!-- 選單列表：文字放大 30% -->
         <nav class="flex-1 flex flex-col justify-center space-y-4">
             
             <a href="女子原型計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-pink-500">
-                <span class="text-[9px] font-bold text-pink-500 tracking-[0.3em] uppercase opacity-80">WOMEN</span>
-                <h3 class="text-lg font-black text-gray-800">女子新文化式上衣原型</h3>
+                <span class="text-[10px] font-bold text-pink-500 tracking-[0.3em] uppercase opacity-80">WOMEN</span>
+                <h3 class="text-2xl font-black text-gray-800">女子新文化式上衣原型</h3>
             </a>
 
             <a href="男子原型計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-blue-500">
-                <span class="text-[9px] font-bold text-blue-500 tracking-[0.3em] uppercase opacity-80">MEN</span>
-                <h3 class="text-lg font-black text-gray-800">男子新文化式上衣原型</h3>
+                <span class="text-[10px] font-bold text-blue-500 tracking-[0.3em] uppercase opacity-80">MEN</span>
+                <h3 class="text-2xl font-black text-gray-800">男子新文化式上衣原型</h3>
             </a>
 
             <a href="兒童原型計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-yellow-500">
-                <span class="text-[9px] font-bold text-yellow-600 tracking-[0.3em] uppercase opacity-80">KIDS</span>
-                <h3 class="text-lg font-black text-gray-800">兒童新文化式上衣原型</h3>
+                <span class="text-[10px] font-bold text-yellow-600 tracking-[0.3em] uppercase opacity-80">KIDS</span>
+                <h3 class="text-2xl font-black text-gray-800">兒童新文化式上衣原型</h3>
             </a>
 
             <a href="基本長褲計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-emerald-500">
-                <span class="text-[9px] font-bold text-emerald-500 tracking-[0.3em] uppercase opacity-80">TROUSERS</span>
-                <h3 class="text-lg font-black text-gray-800">基本長褲版型</h3>
+                <span class="text-[10px] font-bold text-emerald-500 tracking-[0.3em] uppercase opacity-80">TROUSERS</span>
+                <h3 class="text-2xl font-black text-gray-800">基本長褲版型</h3>
             </a>
 
             <a href="基本窄裙計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-purple-500">
-                <span class="text-[9px] font-bold text-purple-500 tracking-[0.3em] uppercase opacity-80">SKIRT</span>
-                <h3 class="text-lg font-black text-gray-800">基本窄裙版型</h3>
+                <span class="text-[10px] font-bold text-purple-500 tracking-[0.3em] uppercase opacity-80">SKIRT</span>
+                <h3 class="text-2xl font-black text-gray-800">基本窄裙版型</h3>
             </a>
 
         </nav>
 
-        <!-- 頁腳已移除英文文字 -->
+        <!-- 頁腳 -->
         <footer class="text-center pt-4 pb-2">
-            <!-- 已移除 Professional Pattern System -->
         </footer>
     </main>
 
     <script>
         let deferredPrompt;
 
-        // 改進後的註冊邏輯，避免在不支援的協議下報錯
+        // 改進後的註冊邏輯
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const isLocalOrBlob = window.location.protocol === 'blob:' || window.location.protocol === 'file:';
@@ -125,7 +124,6 @@
                     navigator.serviceWorker.register('sw.js')
                     .then(reg => console.log('Service Worker 註冊成功'))
                     .catch(err => {
-                        // 僅在非 HTTPS 下顯示較詳細的錯誤
                         if (window.location.protocol !== 'https:') {
                             console.warn('PWA 需要 HTTPS 環境才能運作。');
                         } else {
