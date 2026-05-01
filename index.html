@@ -5,37 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>新文化式原型計算器</title>
 
-    <!-- 1. 引入 Manifest (新增) -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- 2. 註冊 Service Worker (新增) -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js');
-            });
-        }
-    </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             -webkit-tap-highlight-color: transparent;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f3f4f6; /* 淺灰色背景 */
+            background-color: #f3f4f6;
         }
-        /* 圓角與陰影 */
         .custom-card {
             border-radius: 1.5rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             transition: all 0.2s ease;
-            display: block; /* 讓連結撐開 */
+            display: block;
         }
         .custom-card:active {
             transform: scale(0.98);
         }
-
-        /* 安裝提示框動畫 */
         #install-modal {
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
@@ -70,7 +57,8 @@
                 <button onclick="closeInstallModal()" class="flex-1 py-3 bg-gray-100 text-gray-500 rounded-xl font-bold text-xs tracking-wider active:scale-95 transition-transform">
                     稍後再說
                 </button>
-                <button onclick="closeInstallModal()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold text-xs tracking-wider active:scale-95 transition-transform">
+                <!-- 注意：這裡呼叫真正的安裝函數 -->
+                <button onclick="triggerInstall()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold text-xs tracking-wider active:scale-95 transition-transform">
                     安裝
                 </button>
             </div>
@@ -84,39 +72,28 @@
     </div>
 
     <main class="flex-grow max-w-md mx-auto w-full p-6 flex flex-col">
-        <!-- 首頁主選單 -->
         <section id="home-panel" class="flex-grow flex flex-col justify-center space-y-8 text-center min-h-[85vh] py-10">
             <div class="mb-4">
                 <h1 class="text-2xl font-black text-slate-800 tracking-[0.2em]">新文化式原型計算器</h1>
             </div>
 
-            <!-- 版型按鈕列表：連結至外部 HTML 檔案 -->
             <div class="grid gap-4 text-left">
-                <!-- 女子原型 -->
                 <a href="女子原型計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-pink-500 relative">
                     <span class="text-[10px] font-bold text-pink-500 tracking-[0.3em] uppercase opacity-80">WOMEN</span>
                     <h3 class="text-xl font-black text-gray-800 mt-1">女子新文化式上衣原型</h3>
                 </a>
-
-                <!-- 男子原型 -->
                 <a href="男子原型計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-blue-500 relative">
                     <span class="text-[10px] font-bold text-blue-500 tracking-[0.3em] uppercase opacity-80">MEN</span>
                     <h3 class="text-xl font-black text-gray-800 mt-1">男子新文化式上衣原型</h3>
                 </a>
-
-                <!-- 兒童原型 -->
                 <a href="兒童原型計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-yellow-500 relative">
                     <span class="text-[10px] font-bold text-yellow-600 tracking-[0.3em] uppercase opacity-80">KIDS</span>
                     <h3 class="text-xl font-black text-gray-800 mt-1">兒童新文化式上衣原型</h3>
                 </a>
-
-                <!-- 基本長褲 -->
                 <a href="基本長褲計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-emerald-500 relative">
                     <span class="text-[10px] font-bold text-emerald-500 tracking-[0.3em] uppercase opacity-80">TROUSERS</span>
                     <h3 class="text-xl font-black text-gray-800 mt-1">基本長褲版型</h3>
                 </a>
-
-                <!-- 基本窄裙 -->
                 <a href="基本窄裙計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-purple-500 relative">
                     <span class="text-[10px] font-bold text-purple-500 tracking-[0.3em] uppercase opacity-80">SKIRT</span>
                     <h3 class="text-xl font-black text-gray-800 mt-1">基本窄裙版型</h3>
@@ -126,16 +103,56 @@
     </main>
 
     <script>
-        window.onload = function() {
+        let deferredPrompt;
+
+        // 註冊 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+
+        // 監聽安裝事件
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // 防止 Chrome 67 以前的版本自動顯示提示
+            e.preventDefault();
+            // 存儲事件以便稍後觸發
+            deferredPrompt = e;
+            // 只有在瀏覽器確認可以安裝時，才顯示您的自定義提示框
             setTimeout(() => {
                 const modal = document.getElementById('install-modal');
                 if(modal) modal.classList.remove('hidden');
-            }, 1000);
-        };
+            }, 1500);
+        });
+
+        // 真正的安裝觸發函數
+        async function triggerInstall() {
+            if (deferredPrompt) {
+                // 顯示瀏覽器內建安裝提示
+                deferredPrompt.prompt();
+                // 等待使用者回饋
+                const { outcome } = await deferredPrompt.userChoice;
+                // 不論結果如何，都重置 prompt
+                deferredPrompt = null;
+                // 隱藏自定義提示框
+                closeInstallModal();
+            } else {
+                // 如果沒有 deferredPrompt，通常代表已經安裝或環境不支援
+                // 這裡改為引導使用者手動操作
+                alert("請點擊瀏覽器選單中的「加入主畫面」進行安裝。");
+                closeInstallModal();
+            }
+        }
 
         function closeInstallModal() {
             document.getElementById('install-modal').classList.add('hidden');
         }
+
+        // 監聽安裝成功
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('應用程式已安裝');
+            closeInstallModal();
+        });
     </script>
 </body>
 </html>
