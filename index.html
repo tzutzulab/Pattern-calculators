@@ -57,7 +57,6 @@
                 <button onclick="closeInstallModal()" class="flex-1 py-3 bg-gray-100 text-gray-500 rounded-xl font-bold text-xs tracking-wider active:scale-95 transition-transform">
                     稍後再說
                 </button>
-                <!-- 注意：這裡呼叫真正的安裝函數 -->
                 <button onclick="triggerInstall()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold text-xs tracking-wider active:scale-95 transition-transform">
                     安裝
                 </button>
@@ -108,38 +107,39 @@
         // 註冊 Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js');
+                navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker 註冊成功', reg))
+                .catch(err => console.log('Service Worker 註冊失敗', err));
             });
         }
 
         // 監聽安裝事件
         window.addEventListener('beforeinstallprompt', (e) => {
-            // 防止 Chrome 67 以前的版本自動顯示提示
+            console.log('偵測到可安裝事件');
             e.preventDefault();
-            // 存儲事件以便稍後觸發
             deferredPrompt = e;
-            // 只有在瀏覽器確認可以安裝時，才顯示您的自定義提示框
+            
+            // 延遲顯示，確保使用者已經看到內容
             setTimeout(() => {
                 const modal = document.getElementById('install-modal');
                 if(modal) modal.classList.remove('hidden');
-            }, 1500);
+            }, 2000);
         });
 
-        // 真正的安裝觸發函數
+        // 觸發安裝
         async function triggerInstall() {
             if (deferredPrompt) {
-                // 顯示瀏覽器內建安裝提示
                 deferredPrompt.prompt();
-                // 等待使用者回饋
                 const { outcome } = await deferredPrompt.userChoice;
-                // 不論結果如何，都重置 prompt
+                console.log(`使用者安裝選擇: ${outcome}`);
                 deferredPrompt = null;
-                // 隱藏自定義提示框
                 closeInstallModal();
             } else {
-                // 如果沒有 deferredPrompt，通常代表已經安裝或環境不支援
-                // 這裡改為引導使用者手動操作
-                alert("請點擊瀏覽器選單中的「加入主畫面」進行安裝。");
+                // 如果沒有 deferredPrompt，可能是因為：
+                // 1. 已經安裝
+                // 2. 瀏覽器不支援此 API (如 iOS Safari)
+                // 3. PWA 設定檔案 (manifest/sw.js) 有錯
+                alert("目前環境無法直接觸發安裝。請檢查是否已安裝，或點擊瀏覽器選單中的「加入主畫面」。");
                 closeInstallModal();
             }
         }
@@ -148,11 +148,16 @@
             document.getElementById('install-modal').classList.add('hidden');
         }
 
-        // 監聽安裝成功
         window.addEventListener('appinstalled', (evt) => {
-            console.log('應用程式已安裝');
+            console.log('應用程式已安裝成功');
             closeInstallModal();
         });
+
+        // 檢查是否已經在 App 模式下運行
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('目前已在 App 模式下運行');
+            closeInstallModal();
+        }
     </script>
 </body>
 </html>
