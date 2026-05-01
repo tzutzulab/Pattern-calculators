@@ -13,12 +13,17 @@
             -webkit-tap-highlight-color: transparent;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #f3f4f6;
+            /* 固定高度，禁止捲動 */
+            overflow: hidden; 
+            height: 100vh;
         }
         .custom-card {
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             transition: all 0.2s ease;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .custom-card:active {
             transform: scale(0.98);
@@ -40,7 +45,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-gray-700">
+<body class="h-screen flex flex-col text-gray-700">
 
     <!-- 安裝提示框 (Modal) -->
     <div id="install-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm hidden">
@@ -61,85 +66,95 @@
                     安裝
                 </button>
             </div>
-            
-            <div class="mt-6 pt-6 border-t border-gray-50">
-                <p class="text-[10px] text-gray-400 leading-tight">
-                    點擊瀏覽器選單中的 <span class="font-bold text-gray-600">「加入主畫面」</span> 以完成安裝
-                </p>
-            </div>
         </div>
     </div>
 
-    <main class="flex-grow max-w-md mx-auto w-full p-6 flex flex-col">
-        <section id="home-panel" class="flex-grow flex flex-col justify-center space-y-8 text-center min-h-[85vh] py-10">
-            <div class="mb-4">
-                <h1 class="text-2xl font-black text-slate-800 tracking-[0.2em]">新文化式原型計算器</h1>
-            </div>
+    <!-- 主內容區 -->
+    <main class="flex-1 max-w-md mx-auto w-full px-6 py-6 flex flex-col overflow-hidden">
+        
+        <!-- 標題 -->
+        <header class="text-center py-6">
+            <h1 class="text-xl font-black text-slate-800 tracking-[0.2em]">新文化式原型計算器</h1>
+        </header>
 
-            <div class="grid gap-4 text-left">
-                <a href="女子原型計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-pink-500 relative">
-                    <span class="text-[10px] font-bold text-pink-500 tracking-[0.3em] uppercase opacity-80">WOMEN</span>
-                    <h3 class="text-xl font-black text-gray-800 mt-1">女子新文化式上衣原型</h3>
-                </a>
-                <a href="男子原型計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-blue-500 relative">
-                    <span class="text-[10px] font-bold text-blue-500 tracking-[0.3em] uppercase opacity-80">MEN</span>
-                    <h3 class="text-xl font-black text-gray-800 mt-1">男子新文化式上衣原型</h3>
-                </a>
-                <a href="兒童原型計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-yellow-500 relative">
-                    <span class="text-[10px] font-bold text-yellow-600 tracking-[0.3em] uppercase opacity-80">KIDS</span>
-                    <h3 class="text-xl font-black text-gray-800 mt-1">兒童新文化式上衣原型</h3>
-                </a>
-                <a href="基本長褲計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-emerald-500 relative">
-                    <span class="text-[10px] font-bold text-emerald-500 tracking-[0.3em] uppercase opacity-80">TROUSERS</span>
-                    <h3 class="text-xl font-black text-gray-800 mt-1">基本長褲版型</h3>
-                </a>
-                <a href="基本窄裙計算機.html" class="custom-card w-full bg-white p-6 border-b-4 border-purple-500 relative">
-                    <span class="text-[10px] font-bold text-purple-500 tracking-[0.3em] uppercase opacity-80">SKIRT</span>
-                    <h3 class="text-xl font-black text-gray-800 mt-1">基本窄裙版型</h3>
-                </a>
-            </div>
-        </section>
+        <!-- 選單列表 -->
+        <nav class="flex-1 flex flex-col justify-center space-y-4">
+            
+            <a href="女子原型計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-pink-500">
+                <span class="text-[9px] font-bold text-pink-500 tracking-[0.3em] uppercase opacity-80">WOMEN</span>
+                <h3 class="text-lg font-black text-gray-800">女子新文化式上衣原型</h3>
+            </a>
+
+            <a href="男子原型計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-blue-500">
+                <span class="text-[9px] font-bold text-blue-500 tracking-[0.3em] uppercase opacity-80">MEN</span>
+                <h3 class="text-lg font-black text-gray-800">男子新文化式上衣原型</h3>
+            </a>
+
+            <a href="兒童原型計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-yellow-500">
+                <span class="text-[9px] font-bold text-yellow-600 tracking-[0.3em] uppercase opacity-80">KIDS</span>
+                <h3 class="text-lg font-black text-gray-800">兒童新文化式上衣原型</h3>
+            </a>
+
+            <a href="基本長褲計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-emerald-500">
+                <span class="text-[9px] font-bold text-emerald-500 tracking-[0.3em] uppercase opacity-80">TROUSERS</span>
+                <h3 class="text-lg font-black text-gray-800">基本長褲版型</h3>
+            </a>
+
+            <a href="基本窄裙計算機.html" class="custom-card bg-white px-6 py-5 border-b-4 border-purple-500">
+                <span class="text-[9px] font-bold text-purple-500 tracking-[0.3em] uppercase opacity-80">SKIRT</span>
+                <h3 class="text-lg font-black text-gray-800">基本窄裙版型</h3>
+            </a>
+
+        </nav>
+
+        <!-- 頁腳已移除英文文字 -->
+        <footer class="text-center pt-4 pb-2">
+            <!-- 已移除 Professional Pattern System -->
+        </footer>
     </main>
 
     <script>
         let deferredPrompt;
 
-        // 註冊 Service Worker
+        // 改進後的註冊邏輯，避免在不支援的協議下報錯
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker 註冊成功', reg))
-                .catch(err => console.log('Service Worker 註冊失敗', err));
+                const isLocalOrBlob = window.location.protocol === 'blob:' || window.location.protocol === 'file:';
+                
+                if (!isLocalOrBlob) {
+                    navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker 註冊成功'))
+                    .catch(err => {
+                        // 僅在非 HTTPS 下顯示較詳細的錯誤
+                        if (window.location.protocol !== 'https:') {
+                            console.warn('PWA 需要 HTTPS 環境才能運作。');
+                        } else {
+                            console.error('Service Worker 註冊失敗:', err);
+                        }
+                    });
+                } else {
+                    console.log('目前環境不支援 Service Worker (Blob/File)，請部署後測試。');
+                }
             });
         }
 
-        // 監聽安裝事件
         window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('偵測到可安裝事件');
             e.preventDefault();
             deferredPrompt = e;
-            
-            // 延遲顯示，確保使用者已經看到內容
             setTimeout(() => {
                 const modal = document.getElementById('install-modal');
                 if(modal) modal.classList.remove('hidden');
-            }, 2000);
+            }, 1500);
         });
 
-        // 觸發安裝
         async function triggerInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`使用者安裝選擇: ${outcome}`);
                 deferredPrompt = null;
                 closeInstallModal();
             } else {
-                // 如果沒有 deferredPrompt，可能是因為：
-                // 1. 已經安裝
-                // 2. 瀏覽器不支援此 API (如 iOS Safari)
-                // 3. PWA 設定檔案 (manifest/sw.js) 有錯
-                alert("目前環境無法直接觸發安裝。請檢查是否已安裝，或點擊瀏覽器選單中的「加入主畫面」。");
+                alert("請點擊瀏覽器選單中的「加入主畫面」進行安裝。");
                 closeInstallModal();
             }
         }
@@ -148,14 +163,11 @@
             document.getElementById('install-modal').classList.add('hidden');
         }
 
-        window.addEventListener('appinstalled', (evt) => {
-            console.log('應用程式已安裝成功');
+        window.addEventListener('appinstalled', () => {
             closeInstallModal();
         });
 
-        // 檢查是否已經在 App 模式下運行
         if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('目前已在 App 模式下運行');
             closeInstallModal();
         }
     </script>
